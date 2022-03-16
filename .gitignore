@@ -1,0 +1,14 @@
+.cache
+cloverage
+codecov.json
+.cpcache
+*.iml
+.idea
+.lein-*
+.nrepl-history
+.nrepl-port
+pom.xml
+target
+
+# Auto-generated project files
+/boot-art/project.clj
