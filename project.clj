@@ -1,6 +1,6 @@
 ; Copyright 2022 Vivid Inc.
 
-(defproject net.vivid-inc/peppy-pipelines "0.1.0-SNAPSHOT"
+(defproject net.vivid-inc/peppy-pipeline "0.1.0-SNAPSHOT"
 
   :description "Peppy Pipelines, a vivacious pipeline and build tool."
   :url "https://github.com/vivid-inc/ash-ra-template"

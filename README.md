@@ -1,7 +1,7 @@
 # Peppy Pipelines
 
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg?style=flat-square)](LICENSE.txt)
-[![Current version](https://img.shields.io/clojars/v/net.vivid-inc/peppy-pipelines.svg?color=blue&style=flat-square)](https://clojars.org/net.vivid-inc/peppy-pipelines)
+[![Current version](https://img.shields.io/clojars/v/net.vivid-inc/peppy-pipeline.svg?color=blue&style=flat-square)](https://clojars.org/net.vivid-inc/peppy-pipeline)
 
 A vivacious Clojure asset pipeline.
 
@@ -12,6 +12,9 @@ Tested with Clojure 1.10.0 and newer, and with Java 8 and newer LTS releases.
 
 ### Design
 - You interact with peppy mainly by designing a Computational Graph of processing pipelines. Configure some file system watchers, specify the output dirs, then focus on your work and enjoyment.
+  - https://github.com/thi-ng/fabric
+  - https://github.com/plumatic/plumbing
+  - https://news.ycombinator.com/item?id=4641465 https://gist.github.com/3874826
 - Packaged with plugins require little configuration to Just Work and make you immediately productive.
 - File system watchers, or conceptually anything else, feed inputs into the CG, triggering processing flow.
 - The user configures the CG processing flow to push inputs through the processing pipeline, resulting in output.
