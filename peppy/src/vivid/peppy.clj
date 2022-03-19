@@ -18,17 +18,19 @@
 ; TODO Re-run graph in response to Observer input.
 ; TODO When first started, do all input files. Use file date times to see if output needs updating.
 ; TODO step functions: in record -> out transcript
-; TODO :continuous mode, :once mode.
+; TODO :continuous mode (depends on file metadata to determine if regen is necessary), :once mode (forces overwrite)
+; TODO mkdir --parents when watch path doesn't exist.
 
 (ns vivid.peppy
   (:require
     [vivid.peppy.plugin.gzip]
-    [vivid.peppy.log :as log])
-  (:import
-    (java.nio.file Path)))
+    [vivid.peppy.log :as log]))
 
 (defn main [args]
   (log/*info-fn* "Peppy getting straight to work")
-  (vivid.peppy.plugin.gzip/watch (:gzip args))
+  (doseq [config args]
+    (condp = (:type config)
+      :gzip (vivid.peppy.plugin.gzip/watch config)
+      (prn "peppy: Unknown config" config)))
   (while true
     (Thread/sleep Long/MAX_VALUE)))

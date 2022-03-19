@@ -16,8 +16,7 @@
   (:require
     [clojure.java.io :as io]
     [clojure.java.shell]
-    [hawk.core :as hawk]
-    [vivid.peppy.log :as log])
+    [hawk.core :as hawk])
   (:import
     (java.nio.file Path)))
 
@@ -40,35 +39,40 @@
        :file-ext file-ext
        :dir      dir})))
 
-(defn gzip-process-one [input _]
-  (let [sh-res (clojure.java.shell/sh "/usr/bin/gzip" "--force" "--keep" "--verbose" (.toString (:path input)))]
+(defn gzip-file [in]
+  (let [sh-res (clojure.java.shell/sh "/usr/bin/gzip" "--force" "--keep" "--verbose" (.toString (:path in)))]
+    (when (not= (:exit sh-res) 0)
+      (println "gzip: gzip exited with non-zero status:" (pr-str sh-res)))
     (when (not (empty? (:out sh-res)))
       (prn (:out sh-res)))
     (when (not (empty? (:err sh-res)))
       (prn (:err sh-res)))
-    (merge sh-res
-           {:step :gzip})))
+    (merge in
+           {:peppy-action :add-dest-file
+            :shell-result sh-res})))
 
-(defn gzip-delete-one [_ dest-path]
-  (prn "gzip: Deleting path" dest-path)
-  (io/delete-file (.toString dest-path)))
+(defn delete-file [in]
+  (prn "gzip: Deleting path" (:dest-path in))
+  (io/delete-file (.toString (:dest-path in)))
+  (merge in
+         {:peppy-action :delete-dest-file}))
 
 (defn in-event [_ {:keys [kind file] :as hawk-event}]
-  (let [i (accept-file (.toPath file) (:file-extensions gzip-process))
-        dest-path (.resolveSibling (.toPath file) (str (:filename i) ".gz"))]
-    (if i
+  (if-let [in (accept-file (.toPath file) (:file-extensions gzip-process))]
+    (let [in (merge in
+                    {:dest-path (.resolveSibling (.toPath file) (str (:filename in) ".gz"))})]
       (cond
         (get #{:create :modify} kind)
-        (gzip-process-one i dest-path)
+        (gzip-file in)
 
         (= :delete kind)
-        (gzip-delete-one i dest-path)
+        (delete-file in)
 
         :else
         (prn "gzip: Unknown hawk event:" (pr-str hawk-event))))
-    (prn "gzip: Ignoring hawk event:" (pr-str hawk-event))))
+    #_(log/trace "gzip: Ignoring hawk event:" hawk-event)))
 
 (defn watch [config]
-  (prn "gzip: Watching path" (:dir config))
+  (print "gzip: Watching path" (:dir config))
   (hawk/watch! [{:paths [(:dir config)]
                  :handler in-event}]))
