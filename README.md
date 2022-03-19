@@ -32,7 +32,7 @@ Tested with Clojure 1.10.0 and newer, and with Java 8 and newer LTS releases.
 - gzip certain file types for direct delivery by the HTTP daemon to requesters.
 
 ### Similar work
+- https://github.com/mylesmegyesi/conveyor
 - https://github.com/rails/sprockets
 - https://github.com/circleci/stefon
 - https://github.com/edgecase/dieter
-- https://github.com/mylesmegyesi/conveyor
