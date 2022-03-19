@@ -16,6 +16,7 @@
   (:require
     [clojure.java.io :as io]
     [clojure.java.shell]
+    [clojure.string]
     [hawk.core :as hawk])
   (:import
     (java.nio.file Path)))
@@ -74,6 +75,11 @@
     #_(log/trace "gzip: Ignoring hawk event:" hawk-event)))
 
 (defn watch [config]
-  (println "gzip: Watching path" (:dir config))
-  (hawk/watch! [{:paths [(:dir config)]
-                 :handler in-event}]))
+  (let [paths (:paths config)]
+    ; Ensure the path exists, otherwise hawk will throw an exception
+    (doseq [p paths]
+      (io/make-parents (clojure.java.io/file p "peppy")))
+    ; Direct hawk to watch the specified directories
+    (println "gzip: Watching paths" (clojure.string/join " " paths))
+    (hawk/watch! [{:paths   paths
+                   :handler in-event}])))

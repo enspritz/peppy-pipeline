@@ -15,11 +15,9 @@
 ; TODO Load everything into a queue. Process when at max capacity or contents stabilizes after 100ms debounce (configurable).
 ; TODO Pass-through copying of files.
 ; TODO Observe the configuration file, hot reload it on changes, reject reload when there are config errors.
-; TODO Re-run graph in response to Observer input.
+; TODO Re-run graph in response to input (watcher) events.
 ; TODO When first started, do all input files. Use file date times to see if output needs updating.
-; TODO step functions: in record -> out transcript
 ; TODO :continuous mode (depends on file metadata to determine if regen is necessary), :once mode (forces overwrite)
-; TODO mkdir --parents when watch path doesn't exist.
 
 (ns vivid.peppy
   (:require
