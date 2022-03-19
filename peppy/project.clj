@@ -14,8 +14,8 @@
 
 (defproject net.vivid-inc/peppy-pipeline "0.1.0-SNAPSHOT"
 
-  :description "Peppy Pipelines, a vivacious asset pipeline and build tool."
-  :url "https://github.com/vivid-inc/ash-ra-template"
+  :description "Peppy Pipeline, a vivacious asset pipeline and build tool."
+  :url "https://github.com/vivid-inc/peppy-pipeline"
   :license {:distribution :repo
             :name         "Apache License 2.0"
             :url          "https://www.apache.org/licenses/LICENSE-2.0"}
