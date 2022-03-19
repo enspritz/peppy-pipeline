@@ -40,19 +40,20 @@
        :dir      dir})))
 
 (defn gzip-file [in]
+  (println "gzip: Compressing path" (.toString (:path in)))
   (let [sh-res (clojure.java.shell/sh "/usr/bin/gzip" "--force" "--keep" "--verbose" (.toString (:path in)))]
     (when (not= (:exit sh-res) 0)
       (println "gzip: gzip exited with non-zero status:" (pr-str sh-res)))
-    (when (not (empty? (:out sh-res)))
-      (prn (:out sh-res)))
-    (when (not (empty? (:err sh-res)))
-      (prn (:err sh-res)))
+    #_(when (not (empty? (:out sh-res)))
+      (log/debug (:out sh-res)))
+    #_(when (not (empty? (:err sh-res)))
+      (log/debug (:err sh-res)))
     (merge in
            {:peppy-action :add-dest-file
             :shell-result sh-res})))
 
 (defn delete-file [in]
-  (prn "gzip: Deleting path" (:dest-path in))
+  (println "gzip: Deleting path" (.toString (:dest-path in)))
   (io/delete-file (.toString (:dest-path in)))
   (merge in
          {:peppy-action :delete-dest-file}))
@@ -73,6 +74,6 @@
     #_(log/trace "gzip: Ignoring hawk event:" hawk-event)))
 
 (defn watch [config]
-  (print "gzip: Watching path" (:dir config))
+  (println "gzip: Watching path" (:dir config))
   (hawk/watch! [{:paths [(:dir config)]
                  :handler in-event}]))
