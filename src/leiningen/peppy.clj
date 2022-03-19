@@ -15,12 +15,19 @@
 ; Referencing https://plumatic.github.io/prismatics-graph-at-strange-loop
 ; Referencing figwheel-main/src/figwheel/main/watching.clj
 
+; TODO Load everything into a queue. Process when at max capacity or contents stabilizes after 100ms debounce (configurable).
+; TODO Pass-through copying of files.
+; TODO Observe the configuration file, hot reload it on changes, reject reload when there are config errors.
+; TODO Re-run graph in response to Observer input.
+; TODO When first started, do all input files. Use file date times to see if output needs updating.
+
 (ns leiningen.peppy
   (:require
-    [nextjournal.beholder :as beholder]
+    [clojure.java.io :as io]
+    [clojure.java.shell]
     [leiningen.core.main :as main-lein]
-    [vivid.peppy.log :as log]
-    [clojure.java.shell])
+    [nextjournal.beholder :as beholder]
+    [vivid.peppy.log :as log])
   (:import
     (java.nio.file Path)))
 
@@ -47,12 +54,21 @@
        :file-ext file-ext
        :dir      dir})))
 
-; TODO Load everything into a queue. Process when at max capacity or contents stabilizes after 100ms.
 
-(defn gzip-process-one [input-path dest-path]
-  (prn "PROCESS" input-path " -> " dest-path))
+(defn gzip-process-one [input dest-path]
+  (let [sh-res (clojure.java.shell/sh "/usr/bin/gzip" "--keep" "--verbose" (.toString (:path input)))]
+    (when (not (empty? (:out sh-res)))
+      (log/*info-fn* (:out sh-res)))
+    (when (not (empty? (:err sh-res)))
+      (log/*warn-fn* (:err sh-res)))
+    (merge sh-res
+           {:step :gzip})))
+
+; TODO step functions: in record -> out transcript
+
 (defn gzip-delete-one [_ dest-path]
-  (prn "DELETE" dest-path))
+  (log/*info-fn* "gzip: Deleting path" dest-path)
+  (io/delete-file (.toString dest-path)))
 
 (defn gzip-watch [{:keys [type path] :as event}]
   (let [i (accept-file path (:file-extensions gzip-process))
@@ -66,24 +82,18 @@
         (gzip-delete-one i dest-path)
 
         :else
-        (log/*warn-fn* "Unknown beholder event:" (pr-str event))))
-    (log/*debug-fn* "Ignoring event:" (pr-str event))))
+        (log/*warn-fn* "gzip: Unknown beholder event:" (pr-str event))))
+    (log/*debug-fn* "gzip: Ignoring event:" (pr-str event))))
 
 ; Leiningen entry point for lein-peppy
 (defn peppy
   "Run an asset pipeline."
   [project & args]
-  (binding [log/*debug-fn* main-lein/debug
-            log/*info-fn* main-lein/info
-            log/*warn-fn* main-lein/warn]
+  (binding [log/*debug-fn* prn                              ;main-lein/debug
+            log/*info-fn* prn                               ;main-lein/info
+            log/*warn-fn* prn                               ;main-lein/warn
+            ]
     (log/*info-fn* "Peppy getting straight to work")
-    (beholder/watch gzip-watch "src/main/content")
+    (beholder/watch gzip-watch "x")
     (while true
       (Thread/sleep Long/MAX_VALUE))))
-
-
-
-
-; TODO Pass-through copying of files.
-; TODO Observe the configuration file, hot reload it on changes, reject reload when there are config errors.
-; TODO Re-run graph in response to Observer input.
