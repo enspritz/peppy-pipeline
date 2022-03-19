@@ -29,7 +29,7 @@
                          ["jar"]
                          ["install"]]}
 
-  :dependencies [[net.vivid-inc/peppy "0.1.0-SNAPSHOT"]]
+  :dependencies [[net.vivid-inc/peppy-pipeline "0.1.0-SNAPSHOT"]]
 
   :dev-dependencies [[org.clojure/clojure "1.10.0"]
                      [leiningen           "2.9.1"]]

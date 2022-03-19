@@ -29,7 +29,7 @@
                          ["jar"]
                          ["install"]]}
 
-  :dependencies [[com.nextjournal/beholder "1.0.0"]
+  :dependencies [[hawk               "0.2.11"]
                  [prismatic/plumbing "0.6.0"]]
 
   :eval-in-leiningen true
