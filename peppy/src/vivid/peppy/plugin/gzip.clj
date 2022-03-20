@@ -83,3 +83,11 @@
     (println "gzip: Watching paths" (clojure.string/join " " paths))
     (hawk/watch! [{:paths   paths
                    :handler in-event}])))
+
+(defn list-files [^String path]
+  (filter #(.isFile %) (file-seq (clojure.java.io/file path))))
+
+(defn once [config]
+  (let [files (mapcat list-files (:paths config))]
+    (doseq [file files]
+      (gzip-file {:path file}))))

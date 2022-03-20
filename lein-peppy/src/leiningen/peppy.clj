@@ -29,4 +29,4 @@
             vivid.peppy.log/*info-fn* println                               ;main-lein/info
             vivid.peppy.log/*warn-fn* println                               ;main-lein/warn
             ]
-    (vivid.peppy/main (get-in project [:peppy :default]))))
+    (vivid.peppy/once (get-in project [:peppy :default]))))

@@ -13,7 +13,6 @@
 ; limitations under the License.
 
 ; TODO Load everything into a queue. Process when at max capacity or contents stabilizes after 100ms debounce (configurable).
-; TODO Pass-through copying of files.
 ; TODO Observe the configuration file, hot reload it on changes, reject reload when there are config errors.
 ; TODO Re-run graph in response to input (watcher) events.
 ; TODO When first started, do all input files. Use file date times to see if output needs updating.
@@ -21,14 +20,32 @@
 
 (ns vivid.peppy
   (:require
+    [vivid.peppy.messages]
+    [vivid.peppy.plugin.art]
+    [vivid.peppy.plugin.copy]
     [vivid.peppy.plugin.gzip]
+    [vivid.peppy.plugin.scss]
     [vivid.peppy.log :as log]))
 
-(defn main [args]
+#_(defn auto-main [args]
   (log/*info-fn* "Peppy getting straight to work")
   (doseq [config args]
     (condp = (:type config)
+      :art  (vivid.peppy.plugin.art/watch config)
+      :copy (vivid.peppy.plugin.copy/watch config)
       :gzip (vivid.peppy.plugin.gzip/watch config)
+      :scss (vivid.peppy.plugin.gzip/watch config)
       (prn "peppy: Unknown config" config)))
   (while true
     (Thread/sleep Long/MAX_VALUE)))
+
+(defn once [args]
+  (doseq [config args]
+    (condp = (:type config)
+      ;:art  (vivid.peppy.plugin.art/watch config)
+      ;:copy (vivid.peppy.plugin.copy/watch config)
+      :gzip (vivid.peppy.plugin.gzip/once config)
+      ;:scss (vivid.peppy.plugin.gzip/watch config)
+      (println (vivid.peppy.messages/pp-str-error
+                 {:message (str "Unknown configuration :type " (:type config))
+                  :config  config})))))
