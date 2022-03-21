@@ -14,29 +14,21 @@
 
 (ns vivid.peppy.plugin.copy
   (:require
-    [clojure.java.io :as io]
-    [hawk.core :as hawk]))
+    [clojure.java.shell]))
 
-(defn copy [in])
-(defn delete [in])
+#_{:type        :copy
+   :src-paths   ["src/main/content"]
+   :dest-path   "target/build"}
 
-(defn in-event [_ {:keys [kind file] :as hawk-event}]
-  (cond
-    (get #{:create :modify} kind)
-    (copy nil)
-
-    (= :delete kind)
-    (delete nil)
-
-    :else
-    (prn "gzip: Unknown hawk event:" (pr-str hawk-event))))
-
-(defn watch [config]
-  (let [paths (:paths config)]
-    ; Ensure the path exists, otherwise hawk will throw an exception
-    (doseq [p paths]
-      (io/make-parents (clojure.java.io/file p "peppy")))
-    ; Direct hawk to watch the specified directories
-    (println "copy: Watching paths" (clojure.string/join " " paths))
-    (hawk/watch! [{:paths   paths
-                   :handler in-event}])))
+(defn once [{:keys [src-paths dest-path] :as config}]
+  ; TODO Copy files one by one. Indicate whether file is updated or skipped.
+  (let [cmd (concat ["/usr/bin/cp" "--recursive" "--update" "--verbose"]
+                    src-paths
+                    [dest-path])
+        result (apply clojure.java.shell/sh cmd)]
+    (when (not= (:exit result) 0)
+      (println "copy: cp exited with non-zero status:" (pr-str result)))
+    (when (not (empty? (:out result)))
+        (println "copy:" (:out result)))
+    (when (not (empty? (:err result)))
+        (println "copy:" (:err result)))))

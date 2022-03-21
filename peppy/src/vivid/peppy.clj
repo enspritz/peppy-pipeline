@@ -43,7 +43,7 @@
   (doseq [config args]
     (condp = (:type config)
       ;:art  (vivid.peppy.plugin.art/watch config)
-      ;:copy (vivid.peppy.plugin.copy/watch config)
+      :copy (vivid.peppy.plugin.copy/once config)
       :gzip (vivid.peppy.plugin.gzip/once config)
       ;:scss (vivid.peppy.plugin.gzip/watch config)
       (println (vivid.peppy.messages/pp-str-error
