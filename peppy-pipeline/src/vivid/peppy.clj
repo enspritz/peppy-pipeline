@@ -20,18 +20,41 @@
    [plumbing.graph]
    [vivid.peppy.log :as log]))
 
-(def stats-graph-decl
-  {:n  (fnk [xs]   (count xs))
-   :m  (fnk [xs n] (/ (sum identity xs) n))
-   :m2 (fnk [xs n] (/ (sum #(* % %) xs) n))
-   ; An output.
-   :v  (fnk [m m2] (- m2 (* m m)))
-   ; Another, separate output.
-   :z  (fnk [n v]  (str "n " n " and v " v))})
+
+
+; Plan:
+;   Assume :once mode for now.
+;   Translate the pipeline description into a plumbing.graph/graph
+;   Run the graph to produce output files.
+
+
+
+(defmulti peppy-plugin (fn [plugin-descriptor] (:plugin plugin-descriptor)))
+
+(defmethod peppy-plugin 'net.vivid-inc/noop
+  [plugin-descriptor]
+  {:run (fn []
+          (let [i (:inputs plugin-descriptor)
+                o (map #(str % "-" (rand-int 10)) i)]
+           {:outputs o}))})
+
+
+
+(def my-pipeline
+  {:a (fnk []  (let [plugin-descriptor {:plugin 'net.vivid-inc/noop
+                                        :inputs ["a"]}
+                     plugin (peppy-plugin plugin-descriptor)
+                     run (:run plugin)]
+                 (run)))
+   :b (fnk [a] (let [plugin-descriptor {:plugin 'net.vivid-inc/noop
+                                        :inputs (:outputs a)}
+                     plugin (peppy-plugin plugin-descriptor)
+                     run (:run plugin)]
+                 (run)))})
 
 (defn run-sample-graph []
-  (let [stats (plumbing.graph/compile stats-graph-decl)
-        res   (stats {:xs [1 2 3 6]})]
+  (let [g   (plumbing.graph/compile my-pipeline)
+        res (g {})]
     (log/*info-fn* (into {} res))))
 
 (defn -main []
