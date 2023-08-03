@@ -13,3 +13,5 @@
 ; limitations under the License.
 
 (ns vivid.peppy.plugin.scss)
+
+; TODO Test whether `scss` is available to execute

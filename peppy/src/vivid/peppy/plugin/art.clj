@@ -13,3 +13,8 @@
 ; limitations under the License.
 
 (ns vivid.peppy.plugin.art)
+
+; Design notes:
+;
+; Implementation is pushed as much as possible into art-cli, because art-cli needs to support auto.
+; Peppy's code only adds interfacing logic / glue code / the Peppy distinctiveness.

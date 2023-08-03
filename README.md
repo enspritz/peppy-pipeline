@@ -8,31 +8,41 @@ A vivacious Clojure asset pipeline.
 Tested with Clojure 1.10.0 and newer, and with Java 8 and newer LTS releases.
 
 ### Goals
-- As in rails/sprockets, completely replace Middleman as our SSG tool.
+- Automate static site build workflows by composing asset processing pipelines.
+- For our (Vivid's) usecase, this is the last step to completely replacing Middleman as our SSG tool.
 
 ### Design
-- You interact with peppy mainly by designing a Computational Graph of processing pipelines. Configure some file system watchers, specify the output dirs, then focus on your work and enjoyment.
+- You design processing pipelines by composing processing steps. Configure some file system watchers, specify the output dirs, then focus on your work and enjoyment. Gulp presents a simple design involving tasks, run in series() and parallel().
+- Thinking of running the pipelines as a compute graph, fed by input events via file system watchers, etc:
   - https://github.com/thi-ng/fabric
   - https://github.com/plumatic/plumbing
   - https://news.ycombinator.com/item?id=4641465 https://gist.github.com/3874826
 - Packaged with plugins require little configuration to Just Work and make you immediately productive.
 - File system watchers, or conceptually anything else, feed inputs into the CG, triggering processing flow.
 - The user configures the CG processing flow to push inputs through the processing pipeline, resulting in output.
-- The output dir is suitable for production builds, figwheel live coding resources directory contents.
-- Lives as a Lein plugin and more.
-- Determines nature of input by metadata provided by the input plugin or by filename extension, MIME type, file magic, etc. If i.e. an art template file `index.html.art` is being processed,
+- Users design Peppy output dir structure for production builds, figwheel live coding resources directory, whatever they have in mind.
+- Born as a lein plugin, looking towards clj-tool and stand-alone.
+- Determines nature of input by metadata provided by the plugin or by filename extension.
 - Exploit the parallel nature of modern CPUs and high throughput of modern storage devices.
+- Relies on the availability of task-specific, tried-and-trusted CLI tooling to accomplish the heavy lifting.
+- Files-on-FS coupled with the DB (registry) approach to handling the flow of files between processing steps.
 
 ### Functions
-- Queryable registry of all files. In particular, queryable from within ART templates.
-- Frontmatter behavior.
+- Queryable DB (registry) of all files. In particular, queryable from within ART templates.
+- Frontmatter-like behavior, augmenting meta-data to the associated file in the DB.
 - SASS compilation.
 - ART templates.
+- favicon generation.
 - Optimize image files with svgo, pngcrush.
-- gzip certain file types for direct delivery by the HTTP daemon to requesters.
+- Compress HTML (remove whitespaces).
+- gzip certain file types in preparation for direct delivery by the HTTPd.
+- Run modes: `auto` for live coding and `once` for production builds.
+- Web GUI to inspect and monitor pipelines, processing steps, and performance.
 
 ### Similar work
-- https://github.com/mylesmegyesi/conveyor
-- https://github.com/rails/sprockets
-- https://github.com/circleci/stefon
-- https://github.com/edgecase/dieter
+- [mylesmegyesi/conveyor](https://github.com/mylesmegyesi/conveyor)
+- [Gulp](https://gulpjs.com/)
+- [Grunt](https://gruntjs.com/)
+- [Rails Sprockets](https://github.com/rails/sprockets)
+- [Stefon](https://github.com/circleci/stefon)
+- [Optimus](https://github.com/magnars/optimus)
