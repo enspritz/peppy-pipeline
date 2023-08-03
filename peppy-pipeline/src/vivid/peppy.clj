@@ -1,10 +1,10 @@
-; Copyright 2022 Vivid Inc. and/or its affiliates.
-
-; Licensed under the Apache License, Version 2.0 (the "License");
+; Copyright 2023 Vivid Inc. and/or its affiliates.
+;
+; Licensed under the Apache License, Version 2.0 (the "License")
 ; you may not use this file except in compliance with the License.
 ; You may obtain a copy of the License at
 ;
-;    https://www.apache.org/licenses/LICENSE-2.0
+;     https://www.apache.org/licenses/LICENSE-2.0
 ;
 ; Unless required by applicable law or agreed to in writing, software
 ; distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,32 +20,10 @@
 
 (ns vivid.peppy
   (:require
-    [vivid.peppy.messages]
-    [vivid.peppy.plugin.art]
-    [vivid.peppy.plugin.copy]
-    [vivid.peppy.plugin.gzip]
-    [vivid.peppy.plugin.scss]
-    [vivid.peppy.log :as log]))
+   [vivid.peppy.log :as log]))
 
-#_(defn auto-main [args]
-  (log/*info-fn* "Peppy getting straight to work")
-  (doseq [config args]
-    (condp = (:type config)
-      :art  (vivid.peppy.plugin.art/watch config)
-      :copy (vivid.peppy.plugin.copy/watch config)
-      :gzip (vivid.peppy.plugin.gzip/watch config)
-      :scss (vivid.peppy.plugin.gzip/watch config)
-      (prn "peppy: Unknown config" config)))
-  (while true
-    (Thread/sleep Long/MAX_VALUE)))
-
-(defn once [args]
-  (doseq [config args]
-    (condp = (:type config)
-      ;:art  (vivid.peppy.plugin.art/watch config)
-      :copy (vivid.peppy.plugin.copy/once config)
-      :gzip (vivid.peppy.plugin.gzip/once config)
-      ;:scss (vivid.peppy.plugin.gzip/watch config)
-      (println (vivid.peppy.messages/pp-str-error
-                 {:message (str "Unknown configuration :type " (:type config))
-                  :config  config})))))
+(defn -main []
+  (binding [log/*debug-fn* println
+            log/*info-fn* println
+            log/*warn-fn* println]
+    (log/*info-fn* "Peppy getting straight to work")))
