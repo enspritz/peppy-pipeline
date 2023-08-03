@@ -12,11 +12,7 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-; TODO Load everything into a queue. Process when at max capacity or contents stabilizes after 100ms debounce (configurable).
-; TODO Observe the configuration file, hot reload it on changes, reject reload when there are config errors.
-; TODO Re-run graph in response to input (watcher) events.
-; TODO When first started, do all input files. Use file date times to see if output needs updating.
-; TODO :continuous mode (depends on file metadata to determine if regen is necessary), :once mode (forces overwrite)
+; Referencing https://github.com/plumatic/plumbing/blob/master/test/plumbing/graph_examples_test.cljc
 
 (ns vivid.peppy
   (:require
@@ -28,7 +24,10 @@
   {:n  (fnk [xs]   (count xs))
    :m  (fnk [xs n] (/ (sum identity xs) n))
    :m2 (fnk [xs n] (/ (sum #(* % %) xs) n))
-   :v  (fnk [m m2] (- m2 (* m m)))})
+   ; An output.
+   :v  (fnk [m m2] (- m2 (* m m)))
+   ; Another, separate output.
+   :z  (fnk [n v]  (str "n " n " and v " v))})
 
 (defn run-sample-graph []
   (let [stats (plumbing.graph/compile stats-graph-decl)
