@@ -20,10 +20,24 @@
 
 (ns vivid.peppy
   (:require
+   [plumbing.core :refer [fnk sum]]
+   [plumbing.graph]
    [vivid.peppy.log :as log]))
+
+(def stats-graph-decl
+  {:n  (fnk [xs]   (count xs))
+   :m  (fnk [xs n] (/ (sum identity xs) n))
+   :m2 (fnk [xs n] (/ (sum #(* % %) xs) n))
+   :v  (fnk [m m2] (- m2 (* m m)))})
+
+(defn run-sample-graph []
+  (let [stats (plumbing.graph/compile stats-graph-decl)
+        res   (stats {:xs [1 2 3 6]})]
+    (log/*info-fn* (into {} res))))
 
 (defn -main []
   (binding [log/*debug-fn* println
             log/*info-fn* println
             log/*warn-fn* println]
-    (log/*info-fn* "Peppy getting straight to work")))
+    (log/*info-fn* "Peppy getting straight to work")
+    (run-sample-graph)))
