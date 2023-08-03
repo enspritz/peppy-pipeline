@@ -1,4 +1,4 @@
-# Peppy Pipelines
+# Peppy Pipeline
 
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg?style=flat-square)](LICENSE.txt)
 [![Current version](https://img.shields.io/clojars/v/net.vivid-inc/peppy-pipeline.svg?color=blue&style=flat-square)](https://clojars.org/net.vivid-inc/peppy-pipeline)
@@ -8,12 +8,12 @@ A vivacious Clojure asset pipeline.
 Tested with Clojure 1.10.0 and newer, and with Java 8 and newer LTS releases.
 
 ### Goals
-- Automate static site build workflows by composing asset processing pipelines.
+- Automate static site build workflows by composing asset processing pipeline.
 - For our (Vivid's) usecase, this is the last step to completely replacing Middleman as our SSG tool.
 
 ### Design
-- You design processing pipelines by composing processing steps. Configure some file system watchers, specify the output dirs, then focus on your work and enjoyment. Gulp presents a simple design involving tasks, run in series() and parallel().
-- Thinking of running the pipelines as a compute graph, fed by input events via file system watchers, etc:
+- You design processing pipeline by composing processing steps. Configure some file system watchers, specify the output dirs, then focus on your work and enjoyment. Gulp presents a simple design involving tasks, run in series() and parallel().
+- Thinking of running the pipeline as a compute graph, fed by input events via file system watchers, etc:
   - https://github.com/thi-ng/fabric
   - https://github.com/plumatic/plumbing
   - https://news.ycombinator.com/item?id=4641465 https://gist.github.com/3874826
@@ -37,7 +37,7 @@ Tested with Clojure 1.10.0 and newer, and with Java 8 and newer LTS releases.
 - Compress HTML (remove whitespaces).
 - gzip certain file types in preparation for direct delivery by the HTTPd.
 - Run modes: `auto` for live coding and `once` for production builds.
-- Web GUI to inspect and monitor pipelines, processing steps, and performance.
+- Web GUI to inspect and monitor pipeline, processing steps, and performance.
 
 ### Similar work
 - [mylesmegyesi/conveyor](https://github.com/mylesmegyesi/conveyor)
