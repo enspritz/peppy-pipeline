@@ -54,6 +54,7 @@
 
   :javac-options ["-target" "null"]
 
+
   :manifest {"Built-By" "vivid"}
 
   ; This version of Leiningen is what we have available to us in CI.
@@ -76,5 +77,7 @@
                                                    org.codehaus.plexus/plexus-utils
                                                    org.slf4j/jcl-over-slf4j
                                                    org.slf4j/slf4j-api]]]
+
+  :repl-options {:init-ns peppy-pipeline.core}
 
   :repositories [["clojars" {:sign-releases false}]])
