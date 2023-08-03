@@ -14,12 +14,12 @@
 
 (ns vivid.peppy.plugin.gzip
   (:require
-    [clojure.java.io :as io]
-    [clojure.java.shell]
-    [clojure.string]
-    [hawk.core :as hawk])
+   [clojure.java.io :as io]
+   [clojure.java.shell]
+   [clojure.string]
+   [hawk.core :as hawk])
   (:import
-    (java.nio.file Path)))
+   (java.nio.file Path)))
 
 ; Places a gzip'ped copy alongside the original. End of the pipeline.
 (def ^:const gzip-process
@@ -46,9 +46,9 @@
     (when (not= (:exit sh-res) 0)
       (println "gzip: gzip exited with non-zero status:" (pr-str sh-res)))
     #_(when (not (empty? (:out sh-res)))
-      (log/debug (:out sh-res)))
+        (log/debug (:out sh-res)))
     #_(when (not (empty? (:err sh-res)))
-      (log/debug (:err sh-res)))
+        (log/debug (:err sh-res)))
     (merge in
            {:peppy-action :add-dest-file
             :shell-result sh-res})))

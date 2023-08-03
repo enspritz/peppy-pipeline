@@ -79,6 +79,6 @@
                                                    org.slf4j/jcl-over-slf4j
                                                    org.slf4j/slf4j-api]]]
 
-  :repl-options {:init-ns peppy-pipeline.core}
+  :repl-options {:init-ns vivid.peppy}
 
   :repositories [["clojars" {:sign-releases false}]])

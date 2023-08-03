@@ -14,7 +14,7 @@
 
 (ns vivid.peppy.plugin.copy
   (:require
-    [clojure.java.shell]))
+   [clojure.java.shell]))
 
 #_{:type        :copy
    :src-paths   ["src/main/content"]
@@ -29,6 +29,6 @@
     (when (not= (:exit result) 0)
       (println "copy: cp exited with non-zero status:" (pr-str result)))
     (when (not (empty? (:out result)))
-        (println "copy:" (:out result)))
+      (println "copy:" (:out result)))
     (when (not (empty? (:err result)))
-        (println "copy:" (:err result)))))
+      (println "copy:" (:err result)))))

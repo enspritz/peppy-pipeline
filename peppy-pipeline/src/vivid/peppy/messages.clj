@@ -15,7 +15,7 @@
 (ns vivid.peppy.messages
   "Uniform Peppy messages throughout tooling."
   (:require
-    [clojure.pprint]))
+   [clojure.pprint]))
 
 (defn pp-str-error [details]
   (str "Peppy error: "
