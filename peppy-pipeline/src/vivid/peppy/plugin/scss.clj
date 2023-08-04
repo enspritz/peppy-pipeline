@@ -14,4 +14,6 @@
 
 (ns vivid.peppy.plugin.scss)
 
+; Design notes:
+;
 ; :init fn tests whether `scss` is available to $PATH or a specified path in :config.

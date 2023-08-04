@@ -21,7 +21,12 @@
   (:import
    (java.nio.file Path)))
 
-; Places a gzip'ped copy alongside the original. End of the pipeline.
+; Design notes:
+;
+; Places gzip'ped copy alongside the select inputs.
+
+; ------------- BEGIN EXPERIMENT ------------
+
 (def ^:const gzip-process
   {:file-extensions #{"css" "html" "js" "svg"}
    :path            "src/main/content"})

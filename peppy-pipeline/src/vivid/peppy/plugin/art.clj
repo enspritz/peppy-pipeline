@@ -16,5 +16,4 @@
 
 ; Design notes:
 ;
-; Implementation is pushed as much as possible into art-cli, because art-cli needs to support auto.
-; Peppy's code only adds interfacing logic / glue code / the Peppy distinctiveness.
+; Peppy adds event stimuli / interfacing logic / glue code / the Peppy distinctiveness; ART does the rest.

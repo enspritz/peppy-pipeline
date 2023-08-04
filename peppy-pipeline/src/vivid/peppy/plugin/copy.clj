@@ -12,23 +12,9 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-(ns vivid.peppy.plugin.copy
-  (:require
-   [clojure.java.shell]))
+(ns vivid.peppy.plugin.copy)
 
-#_{:type        :copy
-   :src-paths   ["src/main/content"]
-   :dest-path   "target/build"}
-
-(defn once [{:keys [src-paths dest-path] :as config}]
-  ; TODO Copy files one by one. Indicate whether file is updated or skipped.
-  (let [cmd (concat ["/usr/bin/cp" "--recursive" "--update" "--verbose"]
-                    src-paths
-                    [dest-path])
-        result (apply clojure.java.shell/sh cmd)]
-    (when (not= (:exit result) 0)
-      (println "copy: cp exited with non-zero status:" (pr-str result)))
-    (when (not (empty? (:out result)))
-      (println "copy:" (:out result)))
-    (when (not (empty? (:err result)))
-      (println "copy:" (:err result)))))
+; Design notes:
+;
+; Copies new and modified inputs to dest-path, retaining sub-paths where possible. ["/usr/bin/cp" "--archive" "--update" "--verbose"]
+; Copy across deletions by deleting corresponding dest paths.

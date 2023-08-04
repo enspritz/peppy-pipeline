@@ -14,4 +14,6 @@
 
 (ns vivid.peppy.plugin.html-minifier)
 
-; TODO https://www.npmjs.com/package/html-minifier
+; Design notes:
+;
+; Consider using https://www.npmjs.com/package/html-minifier as it is kept up-to-date.

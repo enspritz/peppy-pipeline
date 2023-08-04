@@ -41,6 +41,8 @@
 - Load everything into a queue. Process when at max capacity or contents stabilizes after 100ms debounce (configurable).
 - Observe the configuration file, hot reload it on changes, reject reload when there are config errors.
 - Re-run graph in response to input (watcher) events.
+  - At those nodes that watch for files, the "there was a filesystem event within this subtree" event is a signal that causes the graph to be re-run, starting at its associated graph node.
+  - That node and everything downstream from it needs to be re-run.
 - When first started, do all input files. Use file date times to see if output needs updating.
 - CLI command is simple:
   - `:continuous` mode: The default. Depends on file metadata to determine if re-running its segment is necessary, specifically last modified / creation date, like `make` and friends.
