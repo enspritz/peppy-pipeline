@@ -19,70 +19,44 @@
    [farolero.core]
    [plumbing.core :refer [fnk]]
    [plumbing.graph]
-   [vivid.peppy.log :as log]))
+   [vivid.peppy.log :as log]
+   [vivid.peppy.plugins :as plugins]))
+
+(defn resolve-peppy-plugin
+  "Resolve the plugin by require'ing its namespace, giving its (defmethod) the opportunity to register itself."
+  [node-descriptor]
+  (-> node-descriptor :plugin symbol require))
+
+
 
 ; Plan:
 ;   Assume :once mode for now.
 ;   Translate the pipeline description into a plumbing.graph/graph
 ;   Run the graph to produce all output files.
 
+; Quote a fully-qualified function that complies with the peppy plugin fn spec.
+
 (def my-pipeline-decl
-  {:a {:plugin 'net.vivid-inc/noop
+  {:a {:plugin 'vivid.peppy.plugin.noop
        :inputs ["some-file"]}
-   :b {:plugin 'net.vivid-inc/noop
+   :b {:plugin 'vivid.peppy.plugin.noop
        :inputs :a}})
 
-; :inputs is transformed:
-;
-;   :a   becomes [{:type :plugin :id :a}]
-;
-;   [:a] becomes            "
-;
-;   (input-path "src") becomes [{:type :filepath :path "src/a.html"}
-;                               {:type :filepath :path "src/b.txt"}]
-;
-;   (input-path "src" :extensions #{"html"}) becomes [{:type :filepath :path "src/a.html"}]
 
-(defn normalize-inputs
-  "Each plugin decides what it wants to do with each of the inputs provided to it."
-  [inputs-decl]
-  (let [f (fn f [x]
-            (cond (keyword? x) {:type :plugin :id x}
-                  (string? x)  {:type :string :val x}
-                  (coll? x)    (map f x)
-                  :else        (farolero.core/signal :vivid.peppy/error {:message     "Unknown :input item"
-                                                                         :item        x
-                                                                         :inputs-decl inputs-decl})))]
-    (->> (f inputs-decl)
-         (flatten)
-         (vec))))
-
-(defmulti peppy-plugin (fn [plugin-descriptor] (:plugin plugin-descriptor)))
-
-(defmethod peppy-plugin 'net.vivid-inc/noop
-  [plugin-descriptor]
-  {:run (fn []
-          (let [desc (update-in plugin-descriptor [:inputs] normalize-inputs)
-                is   (as-> (:inputs desc) $
-                       (filter #(= (:type %) :string) $)
-                       (map :val $))
-                o    (map #(str % "-" (rand-int 10)) is)
-                _ (log/*info-fn* (pr-str {:desc desc :is is :o o}))]
-            {:outputs o}))})
 
 (def my-pipeline
-  {:a (fnk []  (let [plugin-descriptor {:plugin 'net.vivid-inc/noop
-                                        :inputs 123}
-                     plugin (peppy-plugin plugin-descriptor)
-                     run (:run plugin)]
-                 (run)))
-   :b (fnk [a] (let [plugin-descriptor {:plugin 'net.vivid-inc/noop
-                                        :inputs (:outputs a)}
-                     plugin (peppy-plugin plugin-descriptor)
-                     run (:run plugin)]
-                 (run)))})
+  {:a (fnk [:as args]  (let [node-descriptor (:a my-pipeline-decl)
+                     _               (resolve-peppy-plugin node-descriptor)
+                     plugin          (plugins/peppy-plugin node-descriptor)
+                     run             (:run plugin)]
+                 (run args)))
+   :b (fnk [a :as args] (let [node-descriptor (:b my-pipeline-decl)
+                     _               (resolve-peppy-plugin node-descriptor)
+                     plugin          (plugins/peppy-plugin node-descriptor)
+                     run             (:run plugin)]
+                 (run args)))})
 
-(defn run-sample-graph []
+(defn run-pipeline-once []
   (let [g   (plumbing.graph/compile my-pipeline)
         res (g {})]
     (log/*info-fn* (into {} res))))
@@ -92,6 +66,6 @@
             log/*info-fn* println
             log/*warn-fn* println]
     (log/*info-fn* "Peppy getting straight to work")
-    (farolero.core/handler-case (run-sample-graph)
+    (farolero.core/handler-case (run-pipeline-once)
                                 (:vivid.peppy/error [_ details]
                                  (log/*warn-fn* (pr-str details))))))

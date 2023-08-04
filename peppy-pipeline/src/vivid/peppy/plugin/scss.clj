@@ -14,4 +14,4 @@
 
 (ns vivid.peppy.plugin.scss)
 
-; TODO Test whether `scss` is available to execute
+; :init fn tests whether `scss` is available to $PATH or a specified path in :config.

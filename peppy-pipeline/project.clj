@@ -39,12 +39,12 @@
                          ["cljfmt" "check"]
                          ["clj-kondo"]
                          ["antq"]
-                         ["nvd" "check"]]
-            }
+                         ["nvd" "check"]]}
 
-  :dependencies [[hawk                 "0.2.11"]
-                 [prismatic/plumbing   "0.6.0"]
-                 [org.suskalo/farolero "1.5.0"]]
+  :dependencies [[babashka/process      "0.5.21"]
+                 [hawk                  "0.2.11"]
+                 [prismatic/plumbing    "0.6.0"]
+                 [org.suskalo/farolero  "1.5.0"]]
 
   :eval-in-leiningen true
 
