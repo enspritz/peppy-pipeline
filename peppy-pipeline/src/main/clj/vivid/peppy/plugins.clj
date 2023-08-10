@@ -47,4 +47,4 @@
 (s/def :vivid.peppy/plugin-input
   (s/keys :req-un [:vivid.peppy/input-type]))
 (s/fdef normalize-inputs
-        :ret (s/coll-of :vivid.peppy/plugin-input))
+  :ret (s/coll-of :vivid.peppy/plugin-input))

@@ -27,8 +27,6 @@
   [node-descriptor]
   (-> node-descriptor :plugin symbol require))
 
-
-
 ; Plan:
 ;   Assume :once mode for now.
 ;   Translate the pipeline description into a plumbing.graph/graph
@@ -42,19 +40,17 @@
    :b {:plugin 'vivid.peppy.plugin.noop
        :inputs :a}})
 
-
-
 (def my-pipeline
   {:a (fnk [:as args]  (let [node-descriptor (:a my-pipeline-decl)
-                     _               (resolve-peppy-plugin node-descriptor)
-                     plugin          (plugins/peppy-plugin node-descriptor)
-                     run             (:run plugin)]
-                 (run args)))
+                             _               (resolve-peppy-plugin node-descriptor)
+                             plugin          (plugins/peppy-plugin node-descriptor)
+                             run             (:run plugin)]
+                         (run args)))
    :b (fnk [a :as args] (let [node-descriptor (:b my-pipeline-decl)
-                     _               (resolve-peppy-plugin node-descriptor)
-                     plugin          (plugins/peppy-plugin node-descriptor)
-                     run             (:run plugin)]
-                 (run args)))})
+                              _               (resolve-peppy-plugin node-descriptor)
+                              plugin          (plugins/peppy-plugin node-descriptor)
+                              run             (:run plugin)]
+                          (run args)))})
 
 (defn run-pipeline-once []
   (let [g   (plumbing.graph/compile my-pipeline)
@@ -68,4 +64,4 @@
     (log/*info-fn* "Peppy getting straight to work")
     (farolero.core/handler-case (run-pipeline-once)
                                 (:vivid.peppy/error [_ details]
-                                 (log/*warn-fn* (pr-str details))))))
+                                                    (log/*warn-fn* (pr-str details))))))

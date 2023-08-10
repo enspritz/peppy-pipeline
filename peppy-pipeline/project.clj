@@ -81,4 +81,6 @@
 
   :repl-options {:init-ns vivid.peppy}
 
-  :repositories [["clojars" {:sign-releases false}]])
+  :repositories [["clojars" {:sign-releases false}]]
+
+  :source-paths ["src/main/clj"])
